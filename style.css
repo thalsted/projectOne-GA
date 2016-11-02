@@ -2,16 +2,38 @@ body {
   margin: 0;
 }
 
-header, footer{
-  height: 60px;
-  width: 100%;
-  animation: rwb 5s linear infinite;
+figure {
+  margin: 0;
 }
 
-footer {
+figure#mouse-pointer {
+  border-radius: 50%;
+  padding: 5px;
+  background-size:  cover;
+  width: 50px;
+  height: 50px;
   position: absolute;
+  display: none;
+  float: left;
+  /* Adapted from: http://creative-punch.net/2014/01/custom-cursors-css-jquery/ */
+}
+
+figure#piece {
+  border-radius: 50%;
+  padding: 5px;
+  background-size:  cover;
+  width: 50px;
+  height: 50px;
+  margin: auto;
+  margin-top: 6px;
+}
+
+
+header {
+  height: 75px;
   width: 100%;
-  bottom: 0px;
+  animation: rwb 10s linear infinite;
+  margin-bottom: 20px;
 }
 
 #container {
@@ -50,6 +72,7 @@ footer {
   margin: 0 5px;
   height: 80px;
   width: 80px;
+  cursor: none;
   background-color: red;
 }
 
