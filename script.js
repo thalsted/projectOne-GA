@@ -21,19 +21,90 @@ $(document).ready(function(){
       case 1:
         return {
           'background-image' : 'url("images/hillary-piece.gif")',
-          'border' : '4px solid #d84545'
+          'background-color' : 'rgba(41,95,188,0.6)',
+          'border' : '3px solid #295fbc'
         }
         break;
       case 2:
         return {
           'background-image' : 'url("images/trump-piece.gif")',
-          'border' : '4px solid #295fbc'
+          'background-color' : 'rgba(216,69,69,0.6)',
+          'border' : '3px solid #d84545'
         }
         break;
     }
   }
-
-
+  var blockUpdate = function(row,col,person) {
+    var $block = $('div[class="block"][data-row="'+row+'"][data-column="'+col+'"]')
+    var $piece = $('<figure id="piece"></figure>')
+    $piece.css(cssA(person))
+    $block.append($piece)
+  }
+  var winCheck = function() {
+    var testHor =function(x) {
+      for (var i = 0; i<6; i++) {
+        for (var j = 0; j<4; j++) {
+          if(x[i][j] === x[i][j+1] &&
+            x[i][j+1] === x[i][j+2] &&
+            x[i][j+2] === x[i][j+3] &&
+            x[i][j] != 0) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    var testVert =function(x) {
+      for (var i = 0; i<7; i++) {
+        for (var j = 0; j<3; j++) {
+          if(x[j][i] === x[j+1][i] &&
+            x[j+1][i] === x[j+2][i] &&
+            x[j+2][i] === x[j+3][i] &&
+            x[j][i] != 0) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    var testDiag1 =function(x) {
+      for (var i = 0; i<3; i++) {
+        for (var j = 0; j<4; j++) {
+          if(x[i][j] === x[i+1][j+1] &&
+            x[i+1][j+1] === x[i+2][j+2] &&
+            x[i+2][j+2] === x[i+3][j+3] &&
+            x[i][j] != 0) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    var testDiag2 =function(x) {
+      for (var i = 0; i<3; i++) {
+        for (var j = 6; j>=3; j--) {
+          if(x[i][j] === x[i+1][j-1] &&
+            x[i+1][j-1] === x[i+2][j-2] &&
+            x[i+2][j-2] === x[i+3][j-3] &&
+            x[i][j] != 0) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    if (testHor(boardStatus) || testVert(boardStatus) || testDiag1(boardStatus) || testDiag2(boardStatus)) {
+      // INSERT WIN FUNCTIONALITY (Pass in 'turn' for the winner)
+      switch(turn) {
+        case 1:
+          alert("Hillary wins!");
+          break;
+        case 2:
+          alert("Trump wins!")
+          break;
+      }
+    }
+  }
   var makeBoard = function() {
     var $block = $('<div class="block"></div>');
 
@@ -48,6 +119,7 @@ $(document).ready(function(){
           if (boardStatus[r][c] === 0) {
             boardStatus[r][c] = turn;
             blockUpdate(r,c,turn);
+            winCheck();
             switcher();
             break;
           }
@@ -56,8 +128,8 @@ $(document).ready(function(){
       .mousemove(function(event) {
           $('figure#mouse-pointer')
           .css({
-              'top' : event.pageY - 15 + 'px',
-              'left' : event.pageX + 'px'
+              'top' : event.pageY + -25 + 'px',
+              'left' : event.pageX + -25 + 'px'
           });
       })
       // Adapted from: http://creative-punch.net/2014/01/custom-cursors-css-jquery/
@@ -84,14 +156,5 @@ $(document).ready(function(){
     }
     switcher();
   }
-
-  var blockUpdate = function(row,col,person) {
-    var $block = $('div[class="block"][data-row="'+row+'"][data-column="'+col+'"]')
-    var $piece = $('<figure id="piece"></figure>')
-    $piece.css(cssA(person))
-
-    $block.append($piece)
-  }
-
   makeBoard();
 })
