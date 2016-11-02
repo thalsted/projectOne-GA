@@ -1,12 +1,18 @@
 $(document).ready(function(){
   console.log('JavaScript loaded.')
   var boardStatus = [];
-  var turn = Math.round(Math.random())+1; //1 = hillary 2 = trump
+  var turn = 0; //1 = hillary 2 = trump
   var switcher = function() {
-    if (turn === 1) {
-      turn = 2;
-    } else {
-      turn = 1;
+    switch(turn) {
+      case 1:
+        turn = 2;
+        break;
+      case 2:
+        turn = 1;
+        break;
+      default:
+        turn = Math.round(Math.random())+1;
+        break;
     }
     $('figure#mouse-pointer').css(cssA(turn));
   }
@@ -35,6 +41,7 @@ $(document).ready(function(){
       var $picker = $('<div class="picker"></div>');
       $picker
       .attr('data-column',i)
+      .attr('style','animation: select 1s linear infinite')
       .click(function(){
         var c = $(this).attr('data-column');
         for (var r = 5; r >= 0; r--) {
@@ -46,6 +53,21 @@ $(document).ready(function(){
           }
         }
       })
+      .mousemove(function(event) {
+          $('figure#mouse-pointer')
+          .css({
+              'top' : event.pageY - 15 + 'px',
+              'left' : event.pageX + 'px'
+          });
+      })
+      // Adapted from: http://creative-punch.net/2014/01/custom-cursors-css-jquery/
+      .mouseenter(function() {
+        $('.picker').removeAttr('style');
+        $('figure#mouse-pointer').show();
+      })
+      .mouseleave(function() {
+        $('figure#mouse-pointer').hide();
+      });
       $('#board').append($picker)
     }
 
@@ -62,24 +84,6 @@ $(document).ready(function(){
     }
     switcher();
   }
-
-  $(function (){
-    $('.picker')
-      .mousemove(function(event) {
-          $('figure#mouse-pointer')
-          .css({
-              'top' : event.pageY - 15 + 'px',
-              'left' : event.pageX + 'px'
-          });
-      })
-      // Adapted from: http://creative-punch.net/2014/01/custom-cursors-css-jquery/
-      .mouseenter(function() {
-        $('figure#mouse-pointer').show();
-      })
-      .mouseleave(function() {
-        $('figure#mouse-pointer').hide();
-      });
-  });
 
   var blockUpdate = function(row,col,person) {
     var $block = $('div[class="block"][data-row="'+row+'"][data-column="'+col+'"]')

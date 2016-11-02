@@ -36,6 +36,20 @@ header {
   margin-bottom: 20px;
 }
 
+@keyframes rwb {
+  0% {
+    background-color: #d84545;
+  } 25% {
+    background-color: #f4f4f4;
+  } 50% {
+      background-color: #295fbc;
+  } 75% {
+      background-color: #f4f4f4;
+  } 100% {
+      background-color: #d84545;
+  }
+}
+
 #container {
   height: 604px;
 }
@@ -46,6 +60,7 @@ header {
   margin: 0 auto;
   padding: 10px;
   background-image: url('images/America-11bg.jpg');
+  opacity: 0.9;
   background-size: cover;
 }
 
@@ -73,7 +88,22 @@ header {
   height: 80px;
   width: 80px;
   cursor: none;
-  background-color: red;
+  background-color: rgba(255,255,0,0.4);
+  border-radius: 10%;
+}
+
+.picker:hover {
+  animation: select 1s linear infinite;
+}
+
+@keyframes select {
+  0% {
+    box-shadow: 0 0 10px rgba(255,255,0,0.4);
+  } 50% {
+    box-shadow: 0 0 20px 5px rgba(255,255,0,0.6);
+  } 100% {
+    box-shadow: 0 0 10px rgba(255,255,0,0.4);
+  }
 }
 
 .block {
@@ -82,20 +112,5 @@ header {
   height: 80px;
   width: 80px;
   border-radius: 50%;
-  background-color: white;
-}
-
-@keyframes rwb {
-     0% {
-    background-color: #d84545;
-  } 25% {
-    background-color: #f4f4f4;
-  } 50% {
-      background-color: #295fbc;
-  } 75% {
-      background-color: #f4f4f4;
-  } 100% {
-      background-color: #d84545;
-  }
-
+  background-color: rgba(255,255,255,0.6);
 }
