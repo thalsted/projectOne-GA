@@ -1,17 +1,21 @@
 $(document).ready(function(){
   console.log('JavaScript loaded.')
   var boardStatus = [];
-  var turn = 0; //1 = hillary 2 = trump
+  var p1 = ''
+  var p2 = ''
+  var turn = Math.round(Math.random())+1; //1 = hillary 2 = trump
   var switcher = function() {
+    $('.sidebar').removeAttr('style');
     switch(turn) {
       case 1:
         turn = 2;
+        showMsg(p2+" Trump's turn!",3);
+        setTimeout(function(){dance($('#trump-sidebar'))},250);
         break;
       case 2:
         turn = 1;
-        break;
-      default:
-        turn = Math.round(Math.random())+1;
+        showMsg(p1+" Clinton's turn!",3);
+        setTimeout(function(){dance($('#hillary-sidebar'))},250);
         break;
     }
     $('figure#mouse-pointer').css(cssA(turn));
@@ -95,15 +99,53 @@ $(document).ready(function(){
     }
     if (testHor(boardStatus) || testVert(boardStatus) || testDiag1(boardStatus) || testDiag2(boardStatus)) {
       // INSERT WIN FUNCTIONALITY (Pass in 'turn' for the winner)
-      switch(turn) {
-        case 1:
-          alert("Hillary wins!");
-          break;
-        case 2:
-          alert("Trump wins!")
-          break;
-      }
+      setTimeout(function(){
+        $('figure#mouse-pointer').remove();
+        switch(turn) {
+          case 1:
+            showMsg(p1+" Clinton wins!",2);
+            break;
+          case 2:
+            showMsg(p2+" Trump wins!",2);
+            break;
+        }
+        setTimeout(function(){showMsg("Do you want to play again?")},3000);
+      },250)
+    } else {
+      switcher();
     }
+  }
+  var showMsg = function(x,t) {
+    $('div#msg').hide();
+    $('div#msg').text(x);
+    $('div#msg').fadeIn(400);
+    if (t != undefined) {
+    setTimeout(function(){$('div#msg').fadeOut(400)},t*1000)
+    } else {
+      $('div#msg')
+       .attr('style','cursor: pointer; animation: glimmer 1s linear infinite;')
+       .click(function(){
+        $('body')
+         .fadeOut(400)
+         window.location.reload();
+      })
+    }
+  }
+  var dance = function(x,t) {
+    x.attr('style','animation: wobble 1s linear infinite')
+    if (t != undefined) {
+    setTimeout(function(){x.removeAttr('style')},t*1000)
+    }
+  }
+  var gameStart = function() {
+    dance($('.sidebar'));
+    setTimeout(function(){
+    p1 = prompt("Player 1, what's your name?");
+    p2 = prompt("Player 2, what's your name?");
+    if (p1 === null) {p1 = ''};
+    if (p2 === null) {p2 = ''};
+    switcher();
+    },100);
   }
   var makeBoard = function() {
     var $block = $('<div class="block"></div>');
@@ -120,7 +162,6 @@ $(document).ready(function(){
             boardStatus[r][c] = turn;
             blockUpdate(r,c,turn);
             winCheck();
-            switcher();
             break;
           }
         }
@@ -154,7 +195,7 @@ $(document).ready(function(){
         $('#board').append($block)
       }
     }
-    switcher();
+    gameStart();
   }
   makeBoard();
 })
