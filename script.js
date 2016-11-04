@@ -36,13 +36,91 @@ $(document).ready(function(){
           'border' : '3px solid #d84545'
         }
         break;
+      case 3:
+        return {
+          'background-image' : 'url("images/harambe-piece.gif")',
+          'background-color' : 'rgba(50, 150, 45,0.6)',
+          'border' : '3px solid #32962d'
+        }
+        break;
     }
   }
-  var blockUpdate = function(row,col,person) {
-    var $block = $('div[class="block"][data-row="'+row+'"][data-column="'+col+'"]')
+  var flash = function(x) {
+    for (var i = 0; i<25; i+=2) {
+      setTimeout(function(){$('html').attr('style','background: '+x)},i*50)
+      setTimeout(function(){$('html').attr('style','background: white')},i*50+50)
+    }
+  }
+  var randBetween = function(min,max) {
+    var ans = Math.floor(Math.random()*(max-min+1))+min;
+    return ans;
+  }
+  var colSwitch = function() {
+    var c1 = randBetween(0,6);
+    var c2 = c1;
+    while (c2 === c1) {
+      c2 = randBetween(0,6);
+    }
+    for (var i = 0; i < 6; i++) {
+      var holder = boardStatus[i][c1];
+      boardStatus[i][c1] = boardStatus[i][c2];
+      boardStatus[i][c2] = holder;
+    }
+    for (var i = 0; i < 6; i++) {
+      var $block = $('div[data-row="'+i+'"][data-column="'+c1+'"]');
+      $block.children('figure#piece').fadeOut("slow").remove();
+      var $piece = $('<figure id="piece"></figure>');
+      var pos = boardStatus[i][c1];
+      if (pos > 0) {
+        $piece.css(cssA(pos));
+        $block.append($piece).children('figure#piece').fadeIn("slow");
+      }
+    }
+    for (var i = 0; i < 6; i++) {
+      var $block = $('div[data-row="'+i+'"][data-column="'+c2+'"]');
+      $block.children('figure#piece').fadeOut("slow").remove();
+      var $piece = $('<figure id="piece"></figure>');
+      var pos = boardStatus[i][c2];
+      if (pos > 0) {
+        $piece.css(cssA(pos));
+        $block.append($piece).children('figure#piece').fadeIn("slow");
+      }
+    }
+  }
+  var wildcard = function(x,y,r,c){
+    if ($('figure#piece').length > 15) {
+      var rand = Math.round(Math.random())
+    } else {
+      var rand = 0
+    }
+    switch(rand) {
+      case 0:
+        boardStatus[r][c] = 3;
+        x.css(cssA(3));
+        y.append(x).children('figure#piece').fadeIn("slow");
+        alert('Harambe surges in the polls!');
+        flash('#32962d');
+        break;
+      case 1:
+        boardStatus[r][c] = turn;
+        x.css(cssA(turn));
+        y.append(x).children('figure#piece').fadeIn("slow");
+        colSwitch();
+        alert('FBI investigation! Pieces fly everywhere!');
+        flash('#5e646d');
+        break;
+    }
+  }
+  var blockUpdate = function(row,col) {
+    var $block = $('div[data-row="'+row+'"][data-column="'+col+'"]')
     var $piece = $('<figure id="piece"></figure>')
-    $piece.css(cssA(person))
-    $block.append($piece)
+    if (Math.random() > 0.2) {
+      boardStatus[row][col] = turn;
+      $piece.css(cssA(turn));
+      $block.append($piece).children('figure#piece').fadeIn("slow");
+    } else {
+      wildcard($piece,$block,row,col);
+    }
   }
   var winCheck = function() {
     var testHor =function(x) {
@@ -52,11 +130,11 @@ $(document).ready(function(){
             x[i][j+1] === x[i][j+2] &&
             x[i][j+2] === x[i][j+3] &&
             x[i][j] != 0) {
-            return true;
+            return x[i][j];
           }
         }
       }
-      return false;
+      return 0;
     }
     var testVert =function(x) {
       for (var i = 0; i<7; i++) {
@@ -65,11 +143,11 @@ $(document).ready(function(){
             x[j+1][i] === x[j+2][i] &&
             x[j+2][i] === x[j+3][i] &&
             x[j][i] != 0) {
-            return true;
+            return x[i][j];
           }
         }
       }
-      return false;
+      return 0;
     }
     var testDiag1 =function(x) {
       for (var i = 0; i<3; i++) {
@@ -78,11 +156,11 @@ $(document).ready(function(){
             x[i+1][j+1] === x[i+2][j+2] &&
             x[i+2][j+2] === x[i+3][j+3] &&
             x[i][j] != 0) {
-            return true;
+            return x[i][j];
           }
         }
       }
-      return false;
+      return 0;
     }
     var testDiag2 =function(x) {
       for (var i = 0; i<3; i++) {
@@ -91,25 +169,31 @@ $(document).ready(function(){
             x[i+1][j-1] === x[i+2][j-2] &&
             x[i+2][j-2] === x[i+3][j-3] &&
             x[i][j] != 0) {
-            return true;
+            return x[i][j];
           }
         }
       }
-      return false;
+      return 0;
     }
-    if (testHor(boardStatus) || testVert(boardStatus) || testDiag1(boardStatus) || testDiag2(boardStatus)) {
-      // INSERT WIN FUNCTIONALITY (Pass in 'turn' for the winner)
+    var winner = (testHor(boardStatus) || testVert(boardStatus) || testDiag1(boardStatus) || testDiag2(boardStatus))
+    if (winner > 0) {
       setTimeout(function(){
         $('figure#mouse-pointer').remove();
-        switch(turn) {
+        switch(winner) {
           case 1:
-            showMsg(p1+" Clinton wins!",2);
+            flash('#295fbc');
+            alert(p1+" Clinton connects four! Everyone loses.");
             break;
           case 2:
-            showMsg(p2+" Trump wins!",2);
+            flash('#d84545');
+            alert(p2+" Trump connects four! Everyone loses.");
+            break;
+          case 3:
+            flash('#32962d');
+            alert("HARAMBE WINS! AMERICA IS SAVED!");
             break;
         }
-        setTimeout(function(){showMsg("Do you want to play again?")},3000);
+        setTimeout(function(){showMsg("Do you want to play again?")},5000);
       },250)
     } else {
       switcher();
@@ -137,11 +221,28 @@ $(document).ready(function(){
     setTimeout(function(){x.removeAttr('style')},t*1000)
     }
   }
+  var emCheck = function(x,y) {
+    if (x.toLowerCase() === "emily") {
+      var ans = prompt("Wait, wait, wait... what's your last name?");
+      if (ans.toLowerCase() === "siegel") {
+        alert('\u2764'.repeat(28));
+        if (y === 1) {
+          $('img#hillary-sidebar').attr('src','images/emily-sidebar.gif');
+        } else {
+          $('img#trump-sidebar').attr('src','images/emily-sidebar.gif');
+        }
+      }
+    }
+  }
   var gameStart = function() {
     dance($('.sidebar'));
     setTimeout(function(){
     p1 = prompt("Player 1, what's your name?");
+    emCheck(p1,1);
     p2 = prompt("Player 2, what's your name?");
+    emCheck(p2,2);
+    p1 = p1[0].toUpperCase() + p1.slice(1,p1.length);
+    p2 = p2[0].toUpperCase() + p2.slice(1,p2.length);
     if (p1 === null) {p1 = ''};
     if (p2 === null) {p2 = ''};
     switcher();
@@ -159,8 +260,7 @@ $(document).ready(function(){
         var c = $(this).attr('data-column');
         for (var r = 5; r >= 0; r--) {
           if (boardStatus[r][c] === 0) {
-            boardStatus[r][c] = turn;
-            blockUpdate(r,c,turn);
+            blockUpdate(r,c);
             winCheck();
             break;
           }
