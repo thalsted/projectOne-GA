@@ -14,3 +14,4 @@ Directions:
 Special thanks to the GA instructors for kicking butt and teaching me the tools to build this game.
 
 Pseudocode vision below...
+![](./projectDocs/IMG_0429.jpg)
