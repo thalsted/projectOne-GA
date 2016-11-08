@@ -13,5 +13,14 @@ Directions:
 
 Special thanks to the GA instructors for kicking butt and teaching me the tools to build this game.
 
+Technologies used:
+-HTML
+-CSS
+-JavaScript
+-jQuery
+
+Unsolved problems:
+-the state of politics in the United States...
+
 Pseudocode vision below...
 ![](./projectDocs/IMG_0429.jpg)
