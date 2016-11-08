@@ -114,13 +114,22 @@ $(document).ready(function(){
   var blockUpdate = function(row,col) {
     var $block = $('div[data-row="'+row+'"][data-column="'+col+'"]')
     var $piece = $('<figure id="piece"></figure>')
-    if (Math.random() > 0.2) {
+    if (Math.random() > 0.15) {
       boardStatus[row][col] = turn;
       $piece.css(cssA(turn));
       $block.append($piece).children('figure#piece').fadeIn("slow");
     } else {
       wildcard($piece,$block,row,col);
     }
+  }
+  var drawCheck = function() {
+    var ans = 0;
+    for (var i = 0; i < boardStatus.length; i++) {
+      if (boardStatus[i].indexOf(0) != -1) {
+        ans++;
+      }
+    }
+    return ans === 0;
   }
   var winCheck = function() {
     var testHor =function(x) {
@@ -195,6 +204,9 @@ $(document).ready(function(){
         }
         setTimeout(function(){showMsg("Do you want to play again?")},5000);
       },250)
+    } else if (drawCheck()) {
+      alert("It's a draw! Mitt Romney and Bernie Sanders are elected the first joint-presidents of the United States!");
+      window.location.reload();
     } else {
       switcher();
     }
