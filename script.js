@@ -307,7 +307,17 @@ $(document).ready(function(){
         $('#board').append($block)
       }
     }
-    gameStart();
-  }
+    $(window)
+      .load(function(){
+        if (window.innerWidth < 1170) {
+         alert("Uh oh... Your browser window isn't quite wide enough to show the game. Mind adjusting it?")
+        }
+      })
+      .resize(function(){
+        if (window.innerWidth > 1170) {
+          gameStart();
+        }
+      });
+    }
   makeBoard();
 })
