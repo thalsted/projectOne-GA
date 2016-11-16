@@ -248,6 +248,7 @@ $(document).ready(function(){
   }
   var gameStart = function() {
     dance($('.sidebar'));
+    $(window).off();
     setTimeout(function(){
     p1 = prompt("Player 1, what's your name?");
     emCheck(p1,1);
@@ -311,9 +312,11 @@ $(document).ready(function(){
       .load(function(){
         if (window.innerWidth < 1170) {
          alert("Uh oh... Your browser window isn't quite wide enough to show the game. Mind adjusting it?")
+        } else {
+          gameStart();
         }
       })
-      .resize(function(){
+      .on("resize", function(){
         if (window.innerWidth > 1170) {
           gameStart();
         }
