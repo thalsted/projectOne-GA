@@ -22,5 +22,8 @@ Technologies used:
 Unsolved problems:
 -the state of politics in the United States...
 
+Link to game:
+https://thalsted.github.io/projectOne-GA/
+
 Pseudocode vision below...
 ![](./projectDocs/IMG_0429.jpg)
